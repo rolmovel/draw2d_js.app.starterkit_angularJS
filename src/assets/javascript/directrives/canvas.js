@@ -35,6 +35,11 @@ d2.directive("draw2dCanvas", ["$window","$parse", "$timeout", function($window,$
    	               canvas.setScrollArea("#"+element.attr("id"));
     	           canvas.onDrop = $.proxy(scope.editor.canvas.onDrop, canvas);
 
+
+                    // Politica dropinterceptorpolicy
+                    canvas.uninstallEditPolicy(new draw2d.policy.canvas.DropInterceptorPolicy);
+                    canvas.installEditPolicy(new draw2d.policy.canvas.ConnectionInterceptorPolicy());
+
     	           // update the scope model with the current state of the
     	           // CommandStack
     	           var stack = canvas.getCommandStack();
@@ -64,6 +69,7 @@ d2.directive("draw2dCanvas", ["$window","$parse", "$timeout", function($window,$
     	            	   if(figure!==null){
     	            		   scope.editor.selection.className = figure.NAME;
     	            		   scope.editor.selection.attr = figure.attr();
+                               scope.editor.selection.attr.userData = figure.userData;
     	            	   }
     	            	   else {
     	            		   scope.editor.selection.className = null;
@@ -84,14 +90,20 @@ d2.directive("draw2dCanvas", ["$window","$parse", "$timeout", function($window,$
     	           //
 	               scope.$watchCollection("editor.selection.attr", function(newValues, oldValues){
     	        	   
+
     	               if(oldValues !== null && scope.editor.selection.figure!==null){
-    	            	   // for performance reason we post only changed attributes to the draw2d figure
-    	            	   //
-    	            	   var changes = draw2d.util.JSON.diff(newValues, oldValues);
-   	            		   scope.editor.selection.figure.attr(changes); 
+    	            	   // En algun momento se pone el userData a undefined y esto no puede suceder
+                           if (typeof newValues.userData != 'undefined') {                                
+                               // for performance reason we post only changed attributes to the draw2d figure
+                               //
+                               var changes = draw2d.util.JSON.diff(newValues, oldValues);
+                               scope.editor.selection.figure.attr(changes); 
+                           } else {
+                               scope.editor.selection.attr.userData = scope.editor.selection.figure.userData;
+                           }
     	               }
     	           });
-    	           
+
 	               // push the canvas function to the scope for ng-action access
 	               //
     	           scope.editor.undo = $.proxy(stack.undo,stack);
@@ -106,6 +118,51 @@ d2.directive("draw2dCanvas", ["$window","$parse", "$timeout", function($window,$
                        var reader = new draw2d.io.json.Reader();
                        reader.unmarshal(canvas, json);
                    },canvas);
+
+                   // Funcion para grabar la estructura
+                   scope.editor.save = $.proxy(function(){
+                        var writer = new draw2d.io.json.Writer();
+                        writer.marshal(canvas, function(json){
+                        // convert the json object into string representation
+                        var jsonTxt = JSON.stringify(json,null,2);
+
+                        // Recorremos el array y transformamos todos los elementos
+                        var trf = [];
+                        json.forEach(function(item) {
+                            var aux = {};
+                            switch(item.type) {
+                                case 'draw2d.shape.node.Start':
+                                    aux.type = 'Source';
+                                    aux.id = item.id;
+                                    aux.data = item.userData;
+                                    break;
+                                case 'draw2d.shape.node.Between':
+                                    aux.type = 'Source';
+                                    aux.id = item.id;
+                                    aux.data = item.userData;
+                                    break;
+                                case 'draw2d.shape.node.End':
+                                    aux.type = 'Source';
+                                    aux.id = item.id;
+                                    aux.data = item.userData;
+                                    break;
+                                case 'draw2d.Connection':
+                                    aux.type = 'Connection';
+                                    aux.id = item.id;
+                                    aux.data = item.userData;
+                                    aux.source = item.source.node;
+                                    aux.target = item.target.node;
+                                    break;
+                            }
+                            trf.push(aux);  
+                        })
+
+                        // insert the json string into a DIV for preview or post
+                        // it via ajax to the server....
+                        console.log(trf);
+                        });
+                   },canvas);
+
     	       }
       };
 }]);

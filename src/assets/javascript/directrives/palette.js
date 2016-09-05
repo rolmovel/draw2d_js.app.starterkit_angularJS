@@ -22,7 +22,8 @@ d2.directive("draw2dPalette",  ["$window","$parse",'$timeout', function($window,
                   });
                },0); 
     	   },
-    	   template:"<div ng-repeat='figure in editor.palette.figures' data-shape='{{figure.class}}'  class='palette_node_element draw2d_droppable'>{{figure.name}}</div>"
+    	   //template:"<div ng-repeat='figure in editor.palette.figures' data-type='{{figure.type}}' data-shape='{{figure.class}}'  class='palette_node_element draw2d_droppable'>{{figure.name}}</div>"
+         templateUrl:"/assets/templates/palette.html"
    };
 }]);
 

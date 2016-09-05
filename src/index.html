@@ -32,6 +32,7 @@
           <button class="btn btn-lg btn-default" ng-disabled="editor.selection.figure==null" ng-click="editor.delete()"> Delete </button>
       </div>
       <button class="btn btn-lg btn-warning pull-right"   ng-click="editor.about()"  > About   </button>
+      <button class="btn btn-lg btn-info pull-right"   ng-click="editor.save()"  > Export  </button>
    </div>
    
 
@@ -40,40 +41,91 @@
          Shape Properties
      </div>
      <div id="properties" ng-switch on="editor.selection.className">
-         
-         <div ng-switch-when="draw2d.shape.node.Start">
-           Start
+          <div ng-switch-when="draw2d.shape.node.Between">
            <div class="panel panel-default">
-	           <div class="panel-heading" >Position</div>
-	           <div class="panel-body" id="position_panel">
-	               <div class="form-group">
-	                   x: <input class="form-control" type="number" ng-model="editor.selection.attr.x" ><br>
-	                   y: <input class="form-control" type="number" ng-model="editor.selection.attr.y" >
-	               </div>
-	           </div>
+             <div class="panel-heading" >Flume properties</div>
+             <div class="panel-body" id="position_panel">
+                <div class="form-group">
+                 <table class="table table-striped">
+                  <tbody id="tableValues">
+                     <tr ng-repeat="(key, value) in editor.selection.attr.userData" >
+                        <td>{{key}}</td>
+                        <td><input class="form-control" type="text" value="{{value}}" ng-readonly="{{key=='type'?true:false}}"></td>
+                    </tr>
+                  </tbody>
+                 </table>
+                </div>
+             </div>
+             <div class="btn-group btn-group-justified">
+              <!--div class="btn-group" role="group">
+               <button type="button" class="btn btn-danger" ng-click="editor.cancelUserData()">Cancel</button>
+              </div-->
+              <div class="btn-group" role="group">
+               <button type="button" class="btn btn-success" ng-click="editor.changeUserData()">Change</button>
+              </div>
+             </div>
            </div>
          </div>
-         
-         <div ng-switch-when="draw2d.shape.node.End" >
-           End
+
+         <div ng-switch-when="draw2d.shape.node.Start">
            <div class="panel panel-default">
-	           <div class="panel-heading" >Position</div>
-	           <div class="panel-body" id="position_panel">
-	               <div class="form-group">
-	                   x: <input class="form-control" type="number" ng-model="editor.selection.attr.x" ><br>
-	                   y: <input class="form-control" type="number" ng-model="editor.selection.attr.y" >
-	               </div>
-	           </div>
+             <div class="panel-heading" >Flume properties</div>
+             <div class="panel-body" id="position_panel">
+                <div class="form-group">
+                 <table class="table table-striped">
+                  <tbody id="tableValues">
+                     <tr ng-repeat="(key, value) in editor.selection.attr.userData" >
+                        <td>{{key}}</td>
+                        <td><input class="form-control" type="text" value="{{value}}" ng-readonly="{{key=='type'?true:false}}"></td>
+                    </tr>
+                  </tbody>
+                 </table>
+                </div>
+             </div>
+             <div class="btn-group btn-group-justified">
+              <!--div class="btn-group" role="group">
+               <button type="button" class="btn btn-danger" ng-click="editor.cancelUserData()">Cancel</button>
+              </div-->
+              <div class="btn-group" role="group">
+               <button type="button" class="btn btn-success"  ng-click="editor.changeUserData()">Change</button>
+              </div>
+             </div>
+           </div>
+         </div>
+
+         <div ng-switch-when="draw2d.shape.node.End" >
+           <div class="panel panel-default">
+             <div class="panel-heading" >Flume properties</div>
+             <div class="panel-body" id="position_panel">
+                <div class="form-group">
+                 <table class="table table-striped">
+                  <tbody id="tableValues">
+                     <tr ng-repeat="(key, value) in editor.selection.attr.userData" >
+                        <td>{{key}}</td>
+                        <td><input class="form-control" type="text" value="{{value}}" ng-readonly="{{key=='type'?true:false}}"></td>
+                    </tr>
+                  </tbody>
+                 </table>
+                </div>
+             </div>
+             <div class="btn-group btn-group-justified">
+              <!--div class="btn-group" role="group">
+               <button type="button" class="btn btn-danger" ng-click="editor.cancelUserData()">Cancel</button>
+              </div-->
+              <div class="btn-group" role="group">
+               <button type="button" class="btn btn-success" ng-click="editor.changeUserData()">Change</button>
+              </div>
+             </div>
            </div>
         </div>    
      </div>
      
    </div>
 
-   <div id="palettePane" draw2d-palette>
+   <div id="palettePane" class="panel-body panel-resizable" draw2d-palette>
    </div>
          
-   <div id="canvas" draw2d-canvas>
+   <div id="canvas" class="panel-body panel-resizable" draw2d-canvas>
    </div>
 
 </body>

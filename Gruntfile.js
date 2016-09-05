@@ -29,8 +29,8 @@ module.exports = function (grunt) {
                     './bower_components/angular/angular.min.js',
                     './bower_components/angular-bootstrap/ui-bootstrap.min.js',
                     './bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
-                    './bower_components/jquery-ui/ui/minified/jquery-ui.min.js'
-
+                    './bower_components/jquery-ui/ui/minified/jquery-ui.min.js',
+                    './src/assets/javascript/util/ConnectionPortPolicy.js'
                 ],
                 dest: './dist/assets/javascript/dependencies.js'
             },
